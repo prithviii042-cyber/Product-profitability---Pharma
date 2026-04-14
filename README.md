@@ -49,6 +49,113 @@ A full-stack AI-powered product profitability analysis tool for pharmaceutical p
 │   │           ├── AIInsightTab.jsx
 │   │           ├── DriverTreeTab.jsx
 │   │           ├── ScenarioPlannerTab.jsx
+│   │           └── ProductRankingTab.jsx
+│   ├── index.html
+│   ├── package.json
+│   ├── tailwind.config.js
+│   ├── postcss.config.js
+│   └── vite.config.js
+├── sample-data/
+│   ├── generate_samples.py       Sample data generator
+│   ├── sample_pl.xlsx           12 products P&L data
+│   ├── sample_budget.xlsx       Budget vs Actual data
+│   └── sample_sku.xlsx          SKU cost breakdown data
+└── README.md
+```
+
+---
+
+## Quick Start
+
+### Backend Setup
+```bash
+cd backend
+pip install -r requirements.txt
+# Add your Anthropic API key to .env
+cp .env.example .env
+# Edit .env with your ANTHROPIC_API_KEY
+uvicorn main:app --reload
+```
+
+### Frontend Setup
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Open http://localhost:5173/ to access the application.
+
+---
+
+## Features
+
+### File Upload & Parsing
+- Supports Excel (.xlsx, .xls) and CSV files
+- Flexible column name matching (handles synonyms like "Product Name" → "Product")
+- Automatic header row detection
+- Validation with helpful error messages
+
+### AI-Powered Analysis
+- Executive brief generation using Claude
+- Margin driver decomposition
+- Scenario planning with AI commentary
+
+### Interactive Dashboard
+- Real-time P&L calculations
+- Sortable product ranking table
+- Visual driver tree charts
+- Scenario modeling interface
+
+---
+
+## API Endpoints
+
+- `POST /upload/pl` - Upload P&L data
+- `POST /upload/budget` - Upload budget vs actual data
+- `POST /upload/sku` - Upload SKU cost breakdown
+- `POST /analyse` - Run full profitability analysis
+- `POST /scenario` - Run what-if scenario modeling
+
+---
+
+## Environment Variables
+
+Create a `.env` file in the backend directory:
+
+```
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+```
+
+---
+
+## Sample Data
+
+The `sample-data/` folder contains generated sample files for testing:
+
+- `sample_pl.xlsx` - 12 pharmaceutical products with P&L data
+- `sample_budget.xlsx` - Budget vs actual for Q1 FY2025
+- `sample_sku.xlsx` - SKU-level cost breakdown for 20 SKUs
+
+Run `python generate_samples.py` to regenerate sample data.
+
+---
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Test thoroughly
+5. Submit a pull request
+
+---
+
+## License
+
+Proprietary - EY Pharma Advisory
+│   │           ├── DriverTreeTab.jsx
+│   │           ├── ScenarioPlannerTab.jsx
 │   │           └── RankedTableTab.jsx
 └── sample-data/
     ├── generate_samples.py      Script to generate test Excel files
@@ -216,3 +323,6 @@ Interactive API docs: http://localhost:8000/docs
 - All uploaded data is stored client-side in React state and sent in full to the backend for analysis and scenario modelling.
 - All monetary values are in Indian Rupees (Crores).
 - Claude model used: `claude-opus-4-5` with a 2048-token limit per call.
+=======
+# Product-profitability---Pharma
+>>>>>>> ca7952685b68e41f246b9513465426e06b7d90ec
