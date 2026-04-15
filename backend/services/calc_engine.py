@@ -127,13 +127,14 @@ def get_portfolio_kpis(df: pd.DataFrame, budget_df: pd.DataFrame = None) -> dict
     if budget_df is not None and len(budget_df) > 0:
         budget_copy = budget_df.copy()
         # Calculate variance if not present
-        if "Variance %" not in budget_copy.columns:
-            if "Budget" in budget_copy.columns and "Actual" in budget_copy.columns:
-                budget_copy["Variance %"] = budget_copy.apply(
-                    lambda r: ((r["Actual"] - r["Budget"]) / r["Budget"] * 100)
-                    if r["Budget"] != 0 else 0,
-                    axis=1,
-                )
+        if "Variance %" not in budget_copy.columns and "Budget" in budget_copy.columns and "Actual" in budget_copy.columns:
+            budget_copy["Budget"] = pd.to_numeric(budget_copy["Budget"], errors="coerce").fillna(0)
+            budget_copy["Actual"] = pd.to_numeric(budget_copy["Actual"], errors="coerce").fillna(0)
+            budget_copy["Variance %"] = budget_copy.apply(
+                lambda r: ((r["Actual"] - r["Budget"]) / r["Budget"] * 100)
+                if r["Budget"] != 0 else 0,
+                axis=1,
+            )
         if "Variance %" in budget_copy.columns:
             # Get worst variance by product (aggregate if multiple metrics)
             budget_agg = (

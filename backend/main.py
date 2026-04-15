@@ -434,15 +434,18 @@ async def analyse(request: AnalyseRequest):
     # Budget variance merging
     budget_variance_map: dict[str, float] = {}
     if budget_df is not None and "Product" in budget_df.columns:
-        budget_df["Budget"] = pd.to_numeric(budget_df.get("Budget", pd.Series()), errors="coerce").fillna(0)
-        budget_df["Actual"] = pd.to_numeric(budget_df.get("Actual", pd.Series()), errors="coerce").fillna(0)
-        if "Variance %" not in budget_df.columns:
+        if "Budget" in budget_df.columns:
+            budget_df["Budget"] = pd.to_numeric(budget_df["Budget"], errors="coerce").fillna(0)
+        if "Actual" in budget_df.columns:
+            budget_df["Actual"] = pd.to_numeric(budget_df["Actual"], errors="coerce").fillna(0)
+        if "Variance %" not in budget_df.columns and "Budget" in budget_df.columns and "Actual" in budget_df.columns:
             budget_df["Variance %"] = budget_df.apply(
                 lambda r: ((r["Actual"] - r["Budget"]) / r["Budget"] * 100) if r["Budget"] != 0 else 0,
                 axis=1,
             )
-        budget_agg = budget_df.groupby("Product")["Variance %"].mean()
-        budget_variance_map = budget_agg.to_dict()
+        if "Variance %" in budget_df.columns:
+            budget_agg = budget_df.groupby("Product")["Variance %"].mean()
+            budget_variance_map = budget_agg.to_dict()
 
     pl_df["Budget Variance %"] = pl_df["Product"].map(budget_variance_map)
     pl_df = flag_underperforming(pl_df)
